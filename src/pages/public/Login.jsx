@@ -25,9 +25,11 @@ const Login = () => {
     // const formulario = document.querySelectorAll('#formulario'); 
   
     if(email == "" || password ==""){
+      setLoading(false);
       //add style to the input
       inputs.forEach(input =>{
         input.style.border = "1px solid red";
+        
       })
       //show the alert 
       alerts.forEach( alert => {
