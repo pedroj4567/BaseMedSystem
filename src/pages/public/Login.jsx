@@ -5,17 +5,20 @@ import toast, { Toaster } from 'react-hot-toast'
 import {  useState } from 'react'
 import useAuth from '../../hooks/useAuth'
 import clienteAxios from "../../config/axios"
-
+import { Spinner } from '../../layouts/components/spinner/Spinner'
 const Login = () => {
   const navigate = useNavigate();
-  const {auth, setAuth} = useAuth();
+  const {setAuth} = useAuth();
   
   //Estado de los campos
   const [email,setEmail] = useState('');
   const [password,setPassword] = useState('');
+  const [loading,setLoading] = useState(false);
+
   //validation function 
   const handlerSubmit = async (e)=>{
     e.preventDefault();
+    setLoading(true)
 
     const inputs = document.querySelectorAll('#formulario input');
     const alerts = document.querySelectorAll('#formulario span');
@@ -48,20 +51,36 @@ const Login = () => {
       }
       const { data } = await clienteAxios.post('auth/login', body);
 
-      if(!data.token) return;
+      //si no encuentra el registro
+      if(data.error){
+        setLoading(false);
+        toast.error(data.msg);
+        return;
+      }
+
+
+      if(!data.token){
+        setLoading(false);
+        return;
+      }
+      //seteamos los datos
       localStorage.setItem('token',data.token);
+      setLoading(false);
       setAuth(data);
-       
+      
+      
       if(!data.isAdmin){
         navigate('/doctor');
         return;
       }
 
       navigate('/admin');
+      
      
 
     } catch (error) {
-      toast.error(error.response.data.msg);
+      setLoading(false);
+      toast.error(`Error interno del servidor: \n${error.message}`);
     }
 
   }
@@ -121,7 +140,8 @@ const Login = () => {
                   </div>
                     <Link to='/olvidePassword' className='text-teal-500 font-semibold hover:text-teal-400 transition-all'>¿Olvido su contraseña?</Link>
                     <button type="submit" value="Ingresar" className="cursor-pointer flex justify-center bg-[#27A09E] w-full mx-auto text-white capitalize p-2 rounded-xl hover:bg-teal-600 text-lg font-bold  transition-all ">
-                        Ingresar
+                       
+                       {loading ? <Spinner/> : 'Ingresar'}
                     </button>
                     
               </form>
