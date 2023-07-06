@@ -6,11 +6,11 @@ import { useState } from "react";
 import clienteAxios from "../../../config/axios.jsx";
 import useAuth from "../../../hooks/useAuth.jsx";
 import toast, { Toaster } from 'react-hot-toast'
-import ALertMessage from "./components/ALertMessage.jsx";
 
 
 const PagePrincipal = () => {
     const { auth, outSession} = useAuth();
+   
     //Nombre estatico
    
     const regex = /[^0-9]/g;
@@ -19,27 +19,41 @@ const PagePrincipal = () => {
     const [prefijo, setPrefijo] = useState('V-');
     const [patient,setPatient] = useState({});
     const [visible,setVisible] = useState(false);
-    const [error,setError] = useState({});
+   
     //validaciones a los campos 
     const handlerSubmit = async (e)=>{
         e.preventDefault();
+        containerSpinner.classList.remove("opacity-0");
+        
+        
+
+        const alertError = document.querySelector('#alertError');
+        const containerSpinner = document.querySelector('#containerSpinner');
         
         //validamos espacios vacios
         if(numero == ""  || !numero.trim()){
-           setError({
-            error: true,
-            msg : "Debe ingresar un cedula"
-           })
-            return;
+            if(alertError.classList.contains('hidden')){
+                alertError.classList.remove("hidden","opacity-0");
+            }
+            
+            //removemos la clase para ocultar
+            setTimeout(() => {
+                alertError.classList.add("hidden");
+            }, 2800);
+            
         }
 
         //validamos que solo pasen numeros y que estos tengan la longitud de la cedula venezolana
         if(regex.test(numero) || numero.length > 8){
-            setError({
-                error: true,
-                msg : "Debe ingresar un cedula valida"
-               })
-            return;
+            if(alertError.classList.contains('hidden')){
+                alertError.classList.remove("hidden","opacity-0");
+            }
+            
+            //removemos la clase para ocultar
+            setTimeout(() => {
+                alertError.classList.add("hidden");
+            }, 2800);
+            
         }
 
         
@@ -47,18 +61,18 @@ const PagePrincipal = () => {
         const cedula = `${prefijo}${numero}`;
        
         try {
+        
+
             const {data} = await clienteAxios(`patients/${cedula}`);
-            console.log(data)
+            console.log(data)  
+
+        
             //establecemos la data
             if(data.id){
                 setPatient(data);
                 setVisible(true);
                 return;
             }
-
-        
-           
-            
         } catch (error) {
             toast.error(error)
         }
@@ -72,10 +86,10 @@ const PagePrincipal = () => {
           />
             <section className="flex justify-center items-center flex-col h-full w-full mx-5  ">
                 {/* Header */}
-                <div className="px-8  right-20 absolute top-5 ">
+                <div className="px-8  right-20 absolute top-5 z-10 ">
                     <div className="">
                         <button 
-                        className=""
+                        className="cursor-pointer "
                         onClick={outSession}
                         >
                             <FontAwesomeIcon icon={faArrowRightFromBracket} size="2xl" className="text-4xl text-teal-500 shadow-lg  transition-all bg-white p-3 rounded-full"/>
@@ -84,7 +98,7 @@ const PagePrincipal = () => {
                     </div>
                 </div>
                 {/* Body */}
-                <div className=" flex flex-col justify-center items-center w-full h-full ">
+                <div className=" flex flex-col justify-center items-center w-full h-full relative ">
                     <div className="mb-5 w-full min-w-[209px] lg:w-[70%] md:text-3xl ">
                         <p className=" 
                              font-bold text-2xl
@@ -124,18 +138,17 @@ const PagePrincipal = () => {
                                     <FontAwesomeIcon icon={faMagnifyingGlass} className=" text-white rounded-full text-3xl text-center" />
                                 </button>
                             </div>
-
-                            <ALertMessage
-                                error={error}
-                            />
+                            
+                            <div className="mt-2  bg-red-600 rounded-lg py-1 w-1/2 hidden transition-opacity duration-500 opacity-0" id='alertError'>
+                                <p><span className="text-white font-bold pl-5 ">Debe ingresar una cedula de identidad válida</span></p>
+                            </div>
+                      
                         </form>
+
 
                             <DataContainer
                             patient={patient}
                             visible={visible}/>
-                        
-                        
-                        
                 </div>
             </section>
         </>
