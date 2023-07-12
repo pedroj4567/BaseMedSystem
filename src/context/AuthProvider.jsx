@@ -46,6 +46,8 @@ const AuthProvider = ({children}) => {
         localStorage.removeItem('token');
         setAuth({});
     }
+
+    
     
     return(
         // Se usa el provider 

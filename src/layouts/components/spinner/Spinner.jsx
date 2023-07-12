@@ -1,6 +1,6 @@
 import './Spinner.css'
 
-export const Spinner = () => {
+const Spinner = () => {
   return (
     <>
       <div className="spinner">
@@ -13,3 +13,5 @@ export const Spinner = () => {
     </>
   )
 }
+
+export default Spinner

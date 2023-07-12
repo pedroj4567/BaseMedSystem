@@ -7,6 +7,9 @@ const DataContainer = ({patient,visible}) => {
         <div className="w-full text-center ">
           <h1 className="text-2xl sm:text-3xl my-4 font-bold text-teal-600 ">Ficha clinica del paciente</h1>
         </div>
+        <div className=" h-14 flex justify-end items-center ">
+          <button className="mx-6 bg-teal-400 px-8 py-1 rounded-lg text-lg text-teal-700 font-bold transition-all hover:bg-teal-600 hover:text-white">Registrar consulta</button>
+        </div>
         {/* Seccion 1 */}
           <div className="flex h-32 flex-col mx-5 sm:flex-row sm:justify-evenly ">
 
@@ -108,12 +111,16 @@ const DataContainer = ({patient,visible}) => {
               <h2 className="text-teal-600 text-lg font-bold mt-2 mb-2 w-full">Patologias base</h2>
               <div className=" h-40 w-full rounded-lg bg-white p-3 flex flex-row items-start  justify-evenly flex-wrap overflow-y-auto">
                   <span className="bg-teal-400 py-2 px-3 rounded-xl font-bold mx-1 mt-2">Hipertension Arterial</span>
-                  <span className="bg-teal-400 py-2 px-3 rounded-xl font-bold mx-1 mt-2">Cancer</span>
-                  <span className="bg-teal-400 py-2 px-3 rounded-xl font-bold mx-1 mt-2">Hipotension Arterial</span>
-
               </div>
             </div>
            
+          </div>
+
+
+          {/* Seccion 5 */}
+
+          <div>
+            
           </div>
 
 
