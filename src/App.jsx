@@ -27,8 +27,9 @@ function App() {
 
                 {/* Rutas protegidas  */}
                 <Route path='/doctor' element={<DoctorLayout/>}>
-                    <Route path='doctor/createPatient' element={<CreatePatient/>}/>
                     <Route index element={<PagePrincipal/>}/>
+                    <Route path='createPatient' element={<CreatePatient/>}/>
+                    
                 </Route>
 
                 <Route path='/admin' element={<AdminLayout/>}>

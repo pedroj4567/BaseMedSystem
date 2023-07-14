@@ -25,7 +25,7 @@ const PagePrincipal = () => {
     const [prefijo, setPrefijo] = useState('V-');
     const [patient,setPatient] = useState({});
     //states of de components
-    const [visible,setVisible] = useState(true);
+    const [visible,setVisible] = useState(false);
     const [loading,setLoading] = useState(false);
     const [notFound,setNotFound] = useState(false)
     //validaciones a los campos 
@@ -83,8 +83,11 @@ const PagePrincipal = () => {
                 setTimeout(()=>{
                     setLoading(false)
                 },2000)
+                setTimeout(() => {
+                    setVisible(true);
+                }, 2100);
                 setPatient(data);
-                setVisible(true);
+                
                 setNotFound(false)
                 return;
             }
@@ -92,6 +95,7 @@ const PagePrincipal = () => {
             if(!data.id){
                 return setTimeout(()=>{
                     setLoading(false);
+                    setVisible(false);
                     setNotFound(true)
                 },2000)
                
@@ -179,13 +183,14 @@ const PagePrincipal = () => {
                         <MessageNotFoundPatient
                             notFound={notFound}
                         /> :
+                        ''   }
+
+                       {visible ? 
                         <DataContainer
                         patient={patient}
                         visible={visible}/>
-                        
-                        }
+                        : ""} 
 
-            
 
                             
                 </div>
@@ -194,4 +199,4 @@ const PagePrincipal = () => {
   )
 }
 
-export default PagePrincipal
+export default PagePrincipal 
