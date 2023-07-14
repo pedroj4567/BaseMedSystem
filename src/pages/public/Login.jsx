@@ -1,11 +1,11 @@
-import {Link, useNavigate, Navigate} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser } from '@fortawesome/free-solid-svg-icons'
 import toast, { Toaster } from 'react-hot-toast'
 import {  useState } from 'react'
 import useAuth from '../../hooks/useAuth'
 import clienteAxios from "../../config/axios"
-import { Spinner } from '../../layouts/components/spinner/Spinner'
+import Spinner  from '../../layouts/components/spinner/Spinner'
 const Login = () => {
   const navigate = useNavigate();
   const {setAuth} = useAuth();

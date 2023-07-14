@@ -5,12 +5,18 @@ import DataContainer from "./components/DataContainer.jsx";
 import { useState } from "react";
 import clienteAxios from "../../../config/axios.jsx";
 import useAuth from "../../../hooks/useAuth.jsx";
+import SpinnerCharger from "./components/SpinnerCharger.jsx";
+import MessageNotFoundPatient from "./components/MessageNotFoundPatient.jsx";
 import toast, { Toaster } from 'react-hot-toast'
 
+// import ModalPatient from "./components/ModalPatient";
+// import { ModalProvider } from "../../../context/ModalProvider";
+// import useModal from '../../../hooks/useModal'
 
 const PagePrincipal = () => {
+    
     const { auth, outSession} = useAuth();
-   
+    
     //Nombre estatico
    
     const regex = /[^0-9]/g;
@@ -18,20 +24,21 @@ const PagePrincipal = () => {
     const [numero,setNumero] = useState('');
     const [prefijo, setPrefijo] = useState('V-');
     const [patient,setPatient] = useState({});
+    //states of de components
     const [visible,setVisible] = useState(false);
-   
+    const [loading,setLoading] = useState(false);
+    const [notFound,setNotFound] = useState(false)
     //validaciones a los campos 
     const handlerSubmit = async (e)=>{
         e.preventDefault();
-        containerSpinner.classList.remove("opacity-0");
-        
-        
+        setNotFound(false)
 
         const alertError = document.querySelector('#alertError');
-        const containerSpinner = document.querySelector('#containerSpinner');
         
         //validamos espacios vacios
         if(numero == ""  || !numero.trim()){
+            setLoading(false)
+            setNotFound(false);
             if(alertError.classList.contains('hidden')){
                 alertError.classList.remove("hidden","opacity-0");
             }
@@ -40,11 +47,15 @@ const PagePrincipal = () => {
             setTimeout(() => {
                 alertError.classList.add("hidden");
             }, 2800);
-            
+
+            return;
+  
         }
 
         //validamos que solo pasen numeros y que estos tengan la longitud de la cedula venezolana
         if(regex.test(numero) || numero.length > 8){
+            
+            
             if(alertError.classList.contains('hidden')){
                 alertError.classList.remove("hidden","opacity-0");
             }
@@ -53,26 +64,44 @@ const PagePrincipal = () => {
             setTimeout(() => {
                 alertError.classList.add("hidden");
             }, 2800);
+
             
+            return;
         }
 
-        
+        setLoading(true)
         //cedula
         const cedula = `${prefijo}${numero}`;
        
         try {
-        
-
+            
             const {data} = await clienteAxios(`patients/${cedula}`);
             console.log(data)  
 
-        
             //establecemos la data
             if(data.id){
+                setTimeout(()=>{
+                    setLoading(false)
+                },2000)
+                setTimeout(() => {
+                    setVisible(true);
+                }, 2100);
                 setPatient(data);
-                setVisible(true);
+                
+                setNotFound(false)
                 return;
             }
+
+            if(!data.id){
+                return setTimeout(()=>{
+                    setLoading(false);
+                    setVisible(false);
+                    setNotFound(true)
+                },2000)
+               
+            }
+
+
         } catch (error) {
             toast.error(error)
         }
@@ -80,11 +109,13 @@ const PagePrincipal = () => {
 
   return (
         <>
+     
          <Toaster
             position="top-right"
             reverseOrder={false}
           />
-            <section className="flex justify-center items-center flex-col h-full w-full mx-5  ">
+            <section className="flex justify-center items-center flex-col h-full w-full mx-5 relative ">
+           
                 {/* Header */}
                 <div className="px-8  right-20 absolute top-5 z-10 ">
                     <div className="">
@@ -144,15 +175,28 @@ const PagePrincipal = () => {
                             </div>
                       
                         </form>
+                    
+                           
+                        {loading ?  <SpinnerCharger/> : ""}
+
+                        {setNotFound ? 
+                        <MessageNotFoundPatient
+                            notFound={notFound}
+                        /> :
+                        ''   }
+
+                       {visible ? 
+                        <DataContainer
+                        patient={patient}
+                        visible={visible}/>
+                        : ""} 
 
 
-                            <DataContainer
-                            patient={patient}
-                            visible={visible}/>
+                            
                 </div>
             </section>
         </>
   )
 }
 
-export default PagePrincipal
+export default PagePrincipal 

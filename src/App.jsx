@@ -10,6 +10,7 @@ import DashboardAdmin from './pages/private/AdminPages/DashboardAdmin'
 import DoctorManage from './pages/private/AdminPages/DoctorManage'
 import PatientsManage from './pages/private/AdminPages/PatientsManage'
 import UsersManage from './pages/private/AdminPages/UsersManage'
+import CreatePatient from './pages/private/DoctorPages/components/pagesCrud/CreatePatient'
 import { AuthProvider } from './context/AuthProvider' //Ya con envolver todos los componenetes con el provider, estos pueden usar el estate o funciones de manera global
 function App() {
   
@@ -27,6 +28,8 @@ function App() {
                 {/* Rutas protegidas  */}
                 <Route path='/doctor' element={<DoctorLayout/>}>
                     <Route index element={<PagePrincipal/>}/>
+                    <Route path='createPatient' element={<CreatePatient/>}/>
+                    
                 </Route>
 
                 <Route path='/admin' element={<AdminLayout/>}>
